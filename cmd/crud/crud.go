@@ -1,7 +1,10 @@
 package crud
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 )
 
 type Library struct {
@@ -14,20 +17,20 @@ type Book struct {
 }
 
 func (l *Library) Create() {
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Enter book name:")
-	var title string
-	fmt.Scanln(&title)
+	title, _ := reader.ReadString('\n')
+	title = strings.TrimSpace(title)
 	fmt.Println("Enter author name:")
-	var author string
-	fmt.Scanln(&author)
+	author, _ := reader.ReadString('\n')
+	author = strings.TrimSpace(author)
 
-	var book Book
-	book.Title = title
-	book.Author = author
-	_ = append(l.Shelf, book)
+	book := Book{title, author}
+
+	l.Shelf = append(l.Shelf, book)
 	fmt.Println("Book added")
 }
-func (l *Library) Read() {
+func (l Library) Read() {
 	for index, book := range l.Shelf {
 		fmt.Printf("%d.%s-%s\n", index+1, book.Title, book.Author)
 	}
@@ -39,26 +42,28 @@ func (l *Library) Update() {
 
 	for _, book := range l.Shelf {
 		if book.Title == title {
+			reader := bufio.NewReader(os.Stdin)
 			fmt.Println("Enter new book name:")
-			var title string
-			fmt.Scanln(&title)
+			title, _ := reader.ReadString('\n')
+			title = strings.TrimSpace(title)
 			fmt.Println("Enter new author name:")
-			var author string
-			fmt.Scanln(&author)
-			book.Title = title
-			book.Author = author
+			author, _ := reader.ReadString('\n')
+			author = strings.TrimSpace(author)
+			book := Book{title, author}
+			l.Shelf = append(l.Shelf, book)
+			return
 		}
 
 	}
 }
 func (l *Library) Delete() {
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Which book do you want to delete?")
-	var title string
-	fmt.Scanln(&title)
-
+	title, _ := reader.ReadString('\n')
+	title = strings.TrimSpace(title)
 	for index, book := range l.Shelf {
 		if book.Title == title {
-			_ = append(l.Shelf[:index], l.Shelf[index+1:]...)
+			l.Shelf = append(l.Shelf[:index], l.Shelf[index+1:]...)
 			break
 		}
 
