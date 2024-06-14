@@ -1,17 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"github.com/muhammadjon1304/library/crud"
+	_ "github.com/lib/pq"
+	crud "github.com/muhammadjon1304/library/crud"
 	"os"
 )
 
+var db *sql.DB
+
 func main() {
+	db := crud.ConnectPostgresDB()
 	newLib := crud.Library{
-		Shelf: []crud.Book{
-			crud.Book{"1984", "George Orwell"},
-			crud.Book{"Black swan", "Nassim Taleb"},
-		},
+		Shelf: db,
 	}
 	for true {
 		fmt.Println("Menu:\n0.Exit\n1.Add book\n2.Show books\n3.Change books\n4.Delete book")
@@ -21,16 +23,16 @@ func main() {
 		case 0:
 			os.Exit(0)
 		case 1:
-			newLib.Create()
+			newLib.Create(db)
 			break
 		case 2:
-			newLib.Read()
+			newLib.Read(db)
 			break
 		case 3:
-			newLib.Update()
+			newLib.Update(db)
 			break
 		case 4:
-			newLib.Delete()
+			newLib.Delete(db)
 			break
 		}
 	}
